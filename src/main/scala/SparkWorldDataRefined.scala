@@ -4,6 +4,7 @@ import org.apache.spark.sql.{Column, SparkSession}
 import org.apache.spark.sql.functions._
 
 object SparkWorldDataRefined extends App {
+
   // Create a SparkSession (only needed if you're not already in a Spark session)
   val spark = SparkSession.builder()
     .master("local[*]")
@@ -26,6 +27,7 @@ object SparkWorldDataRefined extends App {
   val removePercentage = udf((value: String) => {
         value.stripSuffix("%").toDouble
   })
+
   val avg_agri = df1
     .select(avg(removePercentage($"Agricultural Land( %)"))).head().getDouble(0)
 
@@ -57,9 +59,6 @@ object SparkWorldDataRefined extends App {
 
   // Show the result
   resultDF.show()
-
   // Stop the SparkSession
   spark.stop()
-
 }
-

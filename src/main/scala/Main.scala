@@ -26,9 +26,9 @@ object Main extends App {
   val removeDollarAndConvertUDF = udf(removeDollarAndConvert)
 
 
-  dfJoin.where($"Minimum wage".isNotNull)
-    .groupBy($"Continent")
-    .agg(avg(removeDollarAndConvertUDF($"Minimum wage")) as "Avarage MinWage By Continent").show
+//  dfJoin.where($"Minimum wage".isNotNull)
+//    .groupBy($"Continent")
+//    .agg(avg(removeDollarAndConvertUDF($"Minimum wage")) as "Avarage MinWage By Continent").show
 
 
   val replaceComma = (str: String) => str.replace(",","").toDouble
@@ -36,49 +36,52 @@ object Main extends App {
 
   val globalArmedForceAvg = dfJoin.select(avg(regexp_replace($"Armed Forces size",",","").cast(DoubleType))).first().getDouble(0)
 
-  df3.where($"country_name".startsWith("T")).groupBy("country_name").count().show
+//  df3.withColumn("CPIOfNeigh",)
+//    withColumn("diffOfCPIBtwNegs",
 
-  dfJoin.select($"Fertility Rate",$"Continent", avg(coalesce($"Fertility Rate", lit(0))).over(Window.partitionBy($"Continent")) as "replacdBy0")
-    .where($"Fertility Rate".isNotNull)
-    .withColumn("replacedNull",avg($"Fertility Rate").over(Window.partitionBy("Continent")))
-    .drop($"Fertility Rate")
-    .distinct().show
+//  df3.where($"country_name".startsWith("T")).groupBy("country_name").count().show
 
-  dfJoin.select($"Country",$"Fertility Rate")
-  .where($"Fertility Rate".isNotNull)
-  .orderBy($"Fertility Rate".desc_nulls_last)
-  .limit(5)
-  .show(false)
+//  dfJoin.select($"Fertility Rate",$"Continent", avg(coalesce($"Fertility Rate", lit(0))).over(Window.partitionBy($"Continent")) as "replacdBy0")
+//    .where($"Fertility Rate".isNotNull)
+//    .withColumn("replacedNull",avg($"Fertility Rate").over(Window.partitionBy("Continent")))
+//    .drop($"Fertility Rate")
+//    .distinct().show
 
-  dfJoin.where($"Armed Forces size".isNotNull)
-    .withColumn("Military/Global", regexp_replace($"Armed Forces size",",","").cast(DoubleType)/globalArmedForceAvg)
-    .show
+//  dfJoin.select($"Country",$"Fertility Rate")
+//  .where($"Fertility Rate".isNotNull)
+//  .orderBy($"Fertility Rate".desc_nulls_last)
+//  .limit(5)
+//  .show(false)
 
-  dfJoin.select($"Continent",avg($"Birth Rate").over(Window.partitionBy($"Continent")) as "Avg Birth Rate by Continent")
-    .groupBy("Continent")
-    .agg(avg("Avg Birth Rate by Continent") as "Final Average")
-    .show
+//  dfJoin.where($"Armed Forces size".isNotNull)
+//    .withColumn("Military/Global", regexp_replace($"Armed Forces size",",","").cast(DoubleType)/globalArmedForceAvg)
+//    .show
 
-  dfJoin.select("Country","CPI","Fertility Rate")
-    .withColumn("RankByCPI",rank().over(Window.orderBy($"CPI".desc_nulls_last)))
-    .orderBy($"Fertility Rate".desc_nulls_last)
-    .limit(5)
-    .show
+//  dfJoin.select($"Continent",avg($"Birth Rate").over(Window.partitionBy($"Continent")) as "Avg Birth Rate by Continent")
+//    .groupBy("Continent")
+//    .agg(avg("Avg Birth Rate by Continent") as "Final Average")
+//    .show
 
-      df.withColumn("AvgInfMortByCurr",avg($"Infant mortality")
-        .over(Window.partitionBy("Currency-Code")))
-        .withColumn("countByCurr",count($"Country").over(Window.partitionBy("Currency-Code")))
-        .where($"countByCurr" > 1)
-      .withColumn("InfMortOverAvg", when($"Infant Mortality" >= $"AvgInfMortByCurr", "yes")
-        .otherwise("no"))
-        .select("Country","InfMortOverAvg","Gross primary education enrollment (%)")
-        .orderBy($"Gross primary education enrollment (%)".desc_nulls_first).show
+//  dfJoin.select("Country","CPI","Fertility Rate")
+//    .withColumn("RankByCPI",rank().over(Window.orderBy($"CPI".desc_nulls_last)))
+//    .orderBy($"Fertility Rate".desc_nulls_last)
+//    .limit(5)
+//    .show
 
-      df.withColumn("CallGroup",$"Calling Code"-$"Calling Code"%5)
-        .withColumn("BirthGroup",$"Fertility Rate".cast("Int"))
-        .where($"Gasoline Price".isNotNull)
-      .groupBy($"CallGroup",$"BirthGroup")
-        .agg(avg(removeDollarAndConvertUDF($"Gasoline Price")) as "avg Gas Price").show()
+  //    df.withColumn("AvgInfMortByCurr",avg($"Infant mortality")
+  //      .over(Window.partitionBy("Currency-Code")))
+  //      .withColumn("countByCurr",count($"Country").over(Window.partitionBy("Currency-Code")))
+  //      .where($"countByCurr" > 1)
+  //    .withColumn("InfMortOverAvg", when($"Infant Mortality" >= $"AvgInfMortByCurr", "yes")
+  //      .otherwise("no"))
+  //      .select("Country","InfMortOverAvg","Gross primary education enrollment (%)")
+  //      .orderBy($"Gross primary education enrollment (%)".desc_nulls_first).show
+
+  //    df.withColumn("CallGroup",$"Calling Code"-$"Calling Code"%5)
+  //      .withColumn("BirthGroup",$"Fertility Rate".cast("Int"))
+  //      .where($"Gasoline Price".isNotNull)
+  //    .groupBy($"CallGroup",$"BirthGroup")
+  //      .agg(avg(removeDollarAndConvertUDF($"Gasoline Price")) as "avg Gas Price").show()
 
 
   def readCountryData(spark: SparkSession) = {
