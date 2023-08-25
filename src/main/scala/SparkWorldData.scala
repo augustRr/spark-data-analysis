@@ -16,17 +16,17 @@ object SparkWorldData extends App {
     //.option("inferSchema", "true")
     .csv("C:/Users/oguzhan/Desktop/sparkData/world-data-2023.csv")
 
-  //  val dfc = df.withColumn("First Char",$"Country".substr(0,1))
-  //    .withColumn("AvgLifeOfLang",avg($"Life expectancy")
-  //        .over(Window.partitionBy("Official language")))
-  //  val dfc1 = dfc.select("First Char","Official language","Life expectancy")
-  //    .withColumn("AvarageLifeForCharNLang",(avg($"Life expectancy"))
-  //    .over(Window.partitionBy("First Char","Official language")))
-  //    .withColumn("AvarageLifeForChar", lit("100") - avg($"Life expectancy")
-  //    .over(Window.partitionBy("First Char")))
-  //    .withColumn("LangLivesLonger",when($"AvarageLifeForCharNLang">$"AvarageLifeForChar","Yes")
-  //      .when($"AvarageLifeForCharNLang"<$"AvarageLifeForChar","No").otherwise("Equal"))
-  //  dfc1.orderBy($"AvarageLifeForChar".desc).show
+    val dfc = df.withColumn("First Char",$"Country".substr(0,1))
+      .withColumn("AvgLifeOfLang",avg($"Life expectancy")
+          .over(Window.partitionBy("Official language")))
+    val dfc1 = dfc.select("First Char","Official language","Life expectancy")
+      .withColumn("AvarageLifeForCharNLang",(avg($"Life expectancy"))
+      .over(Window.partitionBy("First Char","Official language")))
+      .withColumn("AvarageLifeForChar", lit("100") - avg($"Life expectancy")
+      .over(Window.partitionBy("First Char")))
+      .withColumn("LangLivesLonger",when($"AvarageLifeForCharNLang">$"AvarageLifeForChar","Yes")
+        .when($"AvarageLifeForCharNLang"<$"AvarageLifeForChar","No").otherwise("Equal"))
+    dfc1.orderBy($"AvarageLifeForChar".desc).show
   val expr = $"Agricultural Land( %)".substr(lit(0), length($"Agricultural Land( %)") - 1)
   val avg_agg_df = df
     .select($"Country",$"Agricultural Land( %)",$"Unemployment rate")
