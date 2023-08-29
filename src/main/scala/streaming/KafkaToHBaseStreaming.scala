@@ -1,14 +1,16 @@
-import org.apache.spark.SparkConf
-import org.apache.spark.streaming.{Seconds, StreamingContext}
-import org.apache.spark.streaming.kafka010._
-import org.apache.kafka.common.serialization.StringDeserializer
-import org.apache.hadoop.hbase.{HBaseConfiguration, TableName}
+package streaming
+
 import org.apache.hadoop.hbase.client.{ConnectionFactory, Put}
 import org.apache.hadoop.hbase.util.Bytes
+import org.apache.hadoop.hbase.{HBaseConfiguration, TableName}
+import org.apache.kafka.common.serialization.StringDeserializer
+import org.apache.spark.SparkConf
+import org.apache.spark.streaming.kafka010._
+import org.apache.spark.streaming.{Seconds, StreamingContext}
 
 object KafkaToHBaseStreaming {
   def main(args: Array[String]): Unit = {
-    val sparkConf = new SparkConf().setAppName("KafkaToHBaseStreaming")
+    val sparkConf = new SparkConf().setAppName("KafkaToHBaseStreaming").setMaster("local[*]")
     val ssc = new StreamingContext(sparkConf, Seconds(5))
 
     val kafkaParams = Map(
@@ -59,3 +61,4 @@ object KafkaToHBaseStreaming {
     s"Processed: $record"
   }
 }
+
