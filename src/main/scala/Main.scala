@@ -1,6 +1,4 @@
-import SparkWordCount.spark
-import org.apache.spark.sql.Encoders.DOUBLE
-import org.apache.spark.sql.catalyst.trees.TreePattern.CAST
+
 import org.apache.spark.sql.functions._
 import org.apache.spark.sql.types.DoubleType
 import org.apache.spark.sql.{DataFrame, SparkSession}

@@ -1,6 +1,5 @@
 package streaming
 
-import org.apache.spark.sql.functions._
 import org.apache.spark.sql.SparkSession
 object SocketFiltering  {
   def main(args: Array[String]): Unit = {
@@ -23,7 +22,7 @@ object SocketFiltering  {
     val wordCounts = words.groupBy("value").count()
 
     val query = wordCounts.writeStream
-      .outputMode("complete")
+      .outputMode("update")
       .format("console")
       .start()
 
