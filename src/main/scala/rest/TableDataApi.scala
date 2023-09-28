@@ -4,6 +4,8 @@ import org.apache.spark.sql.functions._
 import org.json4s.DefaultFormats
 import org.scalatra._
 import org.scalatra.json._
+import org.sparkproject.jetty.server.Server
+import org.sparkproject.jetty.servlet.{ServletContextHandler, ServletHolder}
 
 class TableDataApi(spark: SparkSession) extends ScalatraServlet with JacksonJsonSupport {
 
@@ -28,8 +30,8 @@ class TableDataApi(spark: SparkSession) extends ScalatraServlet with JacksonJson
 
       val groupByExpr = col(groupByColumn)
       val aggregationExprs = Seq(
-        when(aggregateAverage, avg("age")).as("average_age"),
-        when(aggregateMax, max("age")).as("max_age")
+        when(lit(aggregateAverage), avg("age")).as("average_age"),
+        when(lit(aggregateMax), max("age")).as("max_age")
       )
 
       sampleData.groupBy(groupByExpr).agg(aggregationExprs.head, aggregationExprs.tail: _*)
@@ -50,6 +52,18 @@ object SparkTableDataApp extends App {
 
   // Create an instance of the TableDataApi and mount it on a Spark server
   val tableDataApi = new TableDataApi(spark)
+  val apiHolder = new ServletHolder(tableDataApi)
+
   val port = 8080 // Choose a port for your API
-  tableDataApi.mount("/api", tableDataApi).setPort(port)
+  val server = new Server(port)
+  val context = new ServletContextHandler(server, "/api")
+  context.addServlet(apiHolder, "/*")
+
+  try {
+    server.start()
+    server.join()
+  } finally {
+    server.stop()
+  }
+//  tableDataApi.mount("/api", tableDataApi).setPort(port)
 }
