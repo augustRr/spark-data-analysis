@@ -14,6 +14,16 @@ val root = (project in file("."))
       "org.apache.spark" %% "spark-streaming" % "3.3.2",
       "org.apache.spark" %% "spark-streaming-kafka-0-10" % "3.3.2",
       "org.apache.spark" %% "spark-core" % "3.3.2",
-      "org.apache.spark" %% "spark-sql" % "3.3.2"
+      "org.scalatra" %% "scalatra" % "2.7.0",
+      "org.scalatra" %% "scalatra-json" % "2.7.0",
+      "org.scalatra" %% "scalatra-scalatest" % "2.7.0" % "test",
+      "ch.qos.logback" % "logback-classic" % "1.2.3" % "runtime",
+      "org.eclipse.jetty" % "jetty-webapp" % "9.4.6.v20170531" % "container",
+      "org.apache.spark" %% "spark-sql" % "3.3.2",
+      "org.scalatest" %% "scalatest" % "3.2.10" % "test",
+      "com.lihaoyi" %% "requests" % "0.6.5",
+      "org.scalaj" %% "scalaj-http" % "2.4.2"
     )
+
   )
+
